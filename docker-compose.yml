@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+    php:
+        build: ./docker/php
+        container_name: php
+        restart: always
+        volumes:
+            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+            - ./src:/var/www/html
+    nginx:
+        image: nginx:latest
+        container_name: nginx
+        volumes:
+            - ./docker/nginx:/etc/nginx/conf.d
+            - ./src:/var/www/html
+        depends_on:
+            - php
+        ports:
+            - 8000:80
+    db:
+        image: mysql:5.7
+        volumes:
+            - storage:/var/lib/mysql
+            - ./docker/mysql:/etc/mysql
+        container_name: db
+        environment:
+            # Modify at your discretion.
+            MYSQL_ROOT_PASSWORD: 5CHCAuTP5-VK
+            MYSQL_DATABASE: app
+            MYSQL_USER: app_user
+            MYSQL_PASSWORD: RUkPm3Y98HSv
+            TZ: 'Asia/Tokyo'
+        ports:
+            - 3306:3306
+        restart: always
+volumes:
+    storage:
